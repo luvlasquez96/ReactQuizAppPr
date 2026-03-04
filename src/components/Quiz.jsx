@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import QUESTIONS from "../questions";
 import QuizCompleted from "../assets/quiz-complete.png";
-import QuestionTimer from "./QuestionTimer";
+import Question from "./Question";
 
 export default function Quiz() {
   /*question to show for the user const [
@@ -9,16 +9,41 @@ export default function Quiz() {
     setActiveQuestionIndex,
   ] = useState(0);*/
 
+  //const shuffledAnswersRef = useRef();
   /*anwer to be stored*/ const [userAnswers, setUserAnswers] = useState([]);
-  const activeQuestionIndex = userAnswers.length;
+  //const [answerState, setAnswerState] = useState("");
+  const activeQuestionIndex = /*answerState === "" ? */ userAnswers.length;
 
   const quizCompleted = activeQuestionIndex === QUESTIONS.length;
 
-  const handleSelectAnswer = useCallback((selectedAnswer) => {
+  /*const handleSelectAnswer = useCallback((selectedAnswer) => {
     setUserAnswers((prevAnswers) => {
       return [...prevAnswers, selectedAnswer];
     });
-  }, []);
+  }, []);*/
+
+  const handleSelectAnswer = useCallback(
+    function handleAnswer(selectedAnswer) {
+      //setAnswerState("answered");
+      setUserAnswers((prevAnswers) => {
+        return [...prevAnswers, selectedAnswer];
+      });
+      /*setTimeout(() => {
+        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
+          setAnswerState("correct");
+        } else {
+          setAnswerState("wrong");
+        }
+
+        setTimeout(() => {
+          setAnswerState("");
+        }, 2000);
+      }, 1000);,*/
+    },
+    [
+      /*activeQuestionIndex*/
+    ],
+  );
 
   const handleSkipAnswer = useCallback(
     () => handleSelectAnswer(null),
@@ -33,29 +58,62 @@ export default function Quiz() {
       </div>
     );
   }
-  /*create a new array to sort the answers*/ const shuffledAnswers = [
-    ...QUESTIONS[activeQuestionIndex].answers,
-  ];
-  shuffledAnswers.sort(() => Math.random() - 0.5);
+
+  /*if (!shuffledAnswersRef.current) {
+    /*create a new array to sort the answers const shuffledAnswersRef.current =
+      [...QUESTIONS[activeQuestionIndex].answers];
+    shuffledAnswersRef.current.sort(() => Math.random() - 0.5);
+  }*/
 
   return (
     <div id="quiz">
       <div id="question">
-        <QuestionTimer
+        <Question
+          key={activeQuestionIndex}
+          index={activeQuestionIndex}
+          onSelectAnswer={handleSelectAnswer}
+          onSkipAnswer={handleSkipAnswer}
+        />
+        {/*<QuestionTimer
           key={activeQuestionIndex}
           timeout={10000}
           onTimeout={handleSkipAnswer}
         />
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-        <ul id="answers">
-          {shuffledAnswers.map((answer) => (
-            <li key={answer} className="answer">
-              <button onClick={() => handleSelectAnswer(answer)}>
-                {answer}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <Answers
+          key={activeQuestionIndex}
+          answers={QUESTIONS[activeQuestionIndex].answers}
+          selectedAnswer={userAnswers[userAnswers.length - 1]}
+          answerState={answerState}
+          onSelect={handleSelectAnswer}
+        />
+        {/*<ul id="answers">
+          {shuffledAnswersRef.current.map((answer) => {
+            const isSelected = userAnswers[userAnswers.length - 1] === answer;
+            let cssClass = "";
+            if (answerState === "answered" && isSelected) {
+              cssClass = "selected";
+            }
+
+            if (
+              (answerState === "correct" || answerState === "wrong") &&
+              isSelected
+            ) {
+              cssClass = answerState;
+            }
+
+            return (
+              <li key={answer} className="answer">
+                <button
+                  onClick={() => handleSelectAnswer(answer)}
+                  className={cssClass}
+                >
+                  {answer}
+                </button>
+              </li>
+            );
+          })}
+        </ul>*/}
       </div>
     </div>
   );
