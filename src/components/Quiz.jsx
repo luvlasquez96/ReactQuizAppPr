@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import QUESTIONS from "../questions";
 import QuizCompleted from "../assets/quiz-complete.png";
 import Question from "./Question";
+import Summary from "./Summary";
 
 export default function Quiz() {
   /*question to show for the user const [
@@ -50,7 +51,7 @@ export default function Quiz() {
     [handleSelectAnswer],
   );
 
-  if (quizCompleted) {
+  /*if (quizCompleted) {
     return (
       <div id="summary">
         <img src={QuizCompleted} alt="Quiz Completed" />
@@ -65,6 +66,9 @@ export default function Quiz() {
     shuffledAnswersRef.current.sort(() => Math.random() - 0.5);
   }*/
 
+  if (quizCompleted) {
+    return <Summary userAnswers={userAnswers} />;
+  }
   return (
     <div id="quiz">
       <div id="question">
